@@ -1,0 +1,14 @@
+[centos]
+client1 ansible_host=192.168.88.101
+client2 ansible_host=192.168.88.102
+client3 ansible_host=192.168.88.103
+
+[ubuntu]
+client4 ansible_host=192.168.88.104
+
+[oracle]
+client5 ansible_host=192.168.88.105
+
+[clients:children]
+centos
+ubuntu

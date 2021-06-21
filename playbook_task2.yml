@@ -1,0 +1,31 @@
+---
+- name: Add group admin 'superusers' and chg visudo
+  hosts: centos
+  gather_facts: no
+  become: yes
+
+  tasks:
+  - name: Ensure group superusers
+    group:
+      name: superusers
+      state: present
+
+  - name: sudo without password for wheel group
+    lineinfile:
+      dest    : /etc/sudoers
+      state   : present
+      line    : 'superusers ALL=(ALL) NOPASSWD: ALL'
+      validate: 'visudo -cf %s'
+
+  - name: Add the user2/user3
+    user:
+      name: "{{ item }}"
+      comment: John Doe
+      shell: /bin/bash
+      groups: superusers
+      append: yes
+    loop:
+        - user2
+        - user3
+
+...

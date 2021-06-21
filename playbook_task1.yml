@@ -1,0 +1,9 @@
+---
+- name: Install and start service dnsmasq
+  hosts: centos
+  gather_facts: no
+  become: yes
+
+  roles:
+     - { role: dnsmasq, listen-address: 192.168.88.101 }
+...
