@@ -1,0 +1,66 @@
+---
+# tasks file for nginx+php-fpm
+
+- name: SELinux to enforcing
+  command: /sbin/setenforce 0
+
+- name: Keep SELinux disabled after reboot
+  lineinfile:
+      dest: /etc/selinux/config
+      regexp: '^#?SELINUX=enforcing'
+      line: 'SELINUX=disabled'
+      backrefs: yes
+      state: present
+
+- name: Open Firewall Port
+  firewalld:
+    zone: public
+    port: 8080/tcp
+    permanent: true
+    state: enabled
+    immediate: true
+
+- name: Install EPEL Repo
+  yum:
+    name=epel-release
+    state=present
+
+- name: Install php-fpm
+  yum:
+    name=php-fpm
+    state=latest
+
+- name: Start php-fpm and boot
+  service:
+    name=php-fpm
+    state=started
+    enabled=yes
+
+- name: Install Nginx
+  yum:
+    name=nginx
+    state=latest
+
+- name: Start Nginx and boot
+  service:
+    name=nginx
+    state=started
+    enabled=yes
+
+- name: Copy nginx.conf
+  template: src=nginx.j2 dest=/etc/nginx/nginx.conf mode=0644
+  notify: Restart_Nginx
+
+- name: Create a directory if it does not exist
+  file:
+    path: '{{ root_nginx }}'
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy index.php
+  template: src=index.php dest={{ root_nginx }}/index.php mode=644
+#  notify: Restart_Nginx
+
+...

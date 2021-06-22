@@ -1,0 +1,9 @@
+---
+- name: Install nginx+php-fpm 
+  hosts: centos
+  gather_facts: no
+  become: yes
+
+  roles:
+     - nginx+php-fpm
+...

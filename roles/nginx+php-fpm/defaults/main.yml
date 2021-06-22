@@ -1,0 +1,3 @@
+---
+# defaults file for nginx+php-fpm
+root_nginx : /usr/share/nginx/html
